@@ -2,7 +2,7 @@
 
 A sleek, web-based GUI for Nmap, Featuring 100+ Nmap commands, glassmorphism design, and a responsive interface optimized for Linux and Termux. Scan networks with ease.
 
-<img src="https://i.ibb.co/xq57zQ7L/Picsart-25-05-26-04-56-36-071.png" alt="Logo" width="100%"/>
+<img src="https://i.ibb.co/xq57zQ7L/Picsart-25-05-26-04-56-36-071.png" alt="Logo" width="50%"/>
 
 ## Features
 - 100+ Nmap commands with customizable options.
