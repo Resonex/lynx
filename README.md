@@ -17,7 +17,7 @@ A sleek, web-based GUI for Nmap, Featuring 100+ Nmap commands, glassmorphism des
 ### For Linux
 1. Clone the repository:
    ```bash
-   git clone https://github.com/resonex/lynx.git
+   git clone https://github.com/Resonex/lynx.git
    cd nmap-web-gui
    ```
 
@@ -42,7 +42,7 @@ A sleek, web-based GUI for Nmap, Featuring 100+ Nmap commands, glassmorphism des
 1. Clone the repository:
    ```bash
    pkg install git -y
-   git clone https://github.com/resonex/lynx.git
+   git clone https://github.com/Resonex/lynx.git
    cd nmap-web-gui
    ```
 
