@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lynx - IP Scanner by Resonex</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      rel="shortcut icon"
+      href="https://i.ibb.co/xq57zQ7L/Picsart-25-05-26-04-56-36-071.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div
+      class="background-container"
+      style="
+        background-image: url('https://i.ibb.co/7tmcRkN1/53418a45aa02848ef18965057a7da844.jpg');
+      "
+    ></div>
+    <header class="glass-container glass-header">
+      <h1>LYNX</h1>
+      <img
+        src="https://i.ibb.co/xq57zQ7L/Picsart-25-05-26-04-56-36-071.png"
+        alt="Lynx Logo"
+        class="logo"
+      />
+      <p class="developer">Developed by Resonex</p>
+    </header>
+    <main class="glass-container glass-main" id="main-content">
+      <h2>IP Scanner</h2>
+      <div id="message" class="message glass-message hidden"></div>
+      <div id="auth-screen" class="glass-auth">
+        <label for="auth-key">Access Key:</label>
+        <input type="password" id="auth-key" placeholder="your key here" />
+        <button onclick="authenticate()" class="glass-btn">Unlock</button>
+      </div>
+      <form id="scan-form" style="display: none" class="features-container">
+        <label
+          for="target"
+          class="tooltip"
+          data-tooltip="Enter IP or hostname to scan"
+          >Target:</label
+        >
+        <input type="text" id="target" placeholder="192.168.1.1" required />
+        <div
+          id="command-preview"
+          class="command-preview glass-command hidden"
+        ></div>
+
+        <!-- Scan Types -->
+        <div class="feature-section glass-section">
+          <h3>Scan Types</h3>
+          <label class="tooltip" data-tooltip="Select scan method"
+            >Scan Type:</label
+          >
+          <select id="scan-type">
+            <option value="">None</option>
+            <option
+              value="-sS"
+              data-tooltip="Stealth SYN scan, fast and reliable"
+            >
+              SYN Scan
+            </option>
+            <option
+              value="-sT"
+              data-tooltip="Full TCP connect scan, more detectable"
+            >
+              TCP Connect
+            </option>
+            <option
+              value="-sU"
+              data-tooltip="UDP scan, checks for open UDP ports"
+            >
+              UDP Scan
+            </option>
+            <option value="-sA" data-tooltip="ACK scan, maps firewall rules">
+              ACK Scan
+            </option>
+            <option
+              value="-sW"
+              data-tooltip="Window scan, checks TCP window sizes"
+            >
+              Window Scan
+            </option>
+            <option value="-sM" data-tooltip="Maimon scan, rare TCP scan type">
+              Maimon Scan
+            </option>
+            <option value="-sN" data-tooltip="Null scan, no TCP flags set">
+              Null Scan
+            </option>
+            <option value="-sF" data-tooltip="FIN scan, only FIN flag set">
+              FIN Scan
+            </option>
+            <option
+              value="-sX"
+              data-tooltip="Xmas scan, multiple TCP flags set"
+            >
+              Xmas Scan
+            </option>
+            <option value="-b" data-tooltip="FTP bounce scan via proxy">
+              FTP Bounce
+            </option>
+            <option value="-sI" data-tooltip="Idle scan using zombie host">
+              Idle Scan
+            </option>
+            <option
+              value="-sO"
+              data-tooltip="IP protocol scan, checks protocol support"
+            >
+              IP Protocol Scan
+            </option>
+            <option value="-sY" data-tooltip="SCTP INIT scan, similar to SYN">
+              SCTP INIT Scan
+            </option>
+            <option value="-sZ" data-tooltip="SCTP COOKIE ECHO scan, stealthy">
+              SCTP COOKIE ECHO
+            </option>
+          </select>
+        </div>
+
+        <!-- Ports -->
+        <div class="feature-section glass-section">
+          <h3>Ports</h3>
+          <label
+            for="ports"
+            class="tooltip"
+            data-tooltip="Specify ports to scan"
+            >Ports (-p):</label
+          >
+          <input type="text" id="ports" placeholder="e.g., 1-1000" />
+          <label
+            ><input
+              type="checkbox"
+              id="fast-scan"
+              data-tooltip="Scan common ports only"
+            />
+            Fast Scan (-F)</label
+          >
+          <label
+            for="top-ports"
+            class="tooltip"
+            data-tooltip="Scan N most common ports"
+            >Top Ports:</label
+          >
+          <input type="number" id="top-ports" placeholder="e.g., 100" />
+          <label
+            ><input
+              type="checkbox"
+              id="port-ratio"
+              data-tooltip="Scan ports by frequency ratio"
+            />
+            Port Ratio</label
+          >
+          <input
+            type="number"
+            id="port-ratio-value"
+            step="0.1"
+            max="1"
+            placeholder="e.g., 0.5"
+          />
+          <label
+            ><input
+              type="checkbox"
+              id="exclude-ports"
+              data-tooltip="Exclude specific ports"
+            />
+            Exclude Ports</label
+          >
+          <input
+            type="text"
+            id="exclude-ports-value"
+            placeholder="e.g., 22,80"
+          />
+          <label
+            ><input
+              type="checkbox"
+              id="allports"
+              data-tooltip="Scan all 65535 ports"
+            />
+            All Ports</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="rport"
+              data-tooltip="Randomize port scan order"
+            />
+            Random Ports</label
+          >
+        </div>
+
+        <!-- Detection -->
+        <div class="feature-section glass-section">
+          <h3>Detection</h3>
+          <label
+            ><input
+              type="checkbox"
+              id="os-detection"
+              data-tooltip="Detect operating system"
+            />
+            OS Detection (-O)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="version-detection"
+              data-tooltip="Detect service versions"
+            />
+            Version Detection (-sV)</label
+          >
+          <label
+            for="version-intensity"
+            class="tooltip"
+            data-tooltip="Version scan intensity (0-9)"
+            >Version Intensity:</label
+          >
+          <input type="number" id="version-intensity" min="0" max="9" />
+          <label
+            ><input
+              type="checkbox"
+              id="version-light"
+              data-tooltip="Light version scan"
+            />
+            Version Light</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="version-all"
+              data-tooltip="Try all version probes"
+            />
+            Version All</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="traceroute"
+              data-tooltip="Trace route to target"
+            />
+            Traceroute</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="service-info"
+              data-tooltip="Include service info"
+            />
+            Service Info (-sR)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="dns-resolution"
+              data-tooltip="Resolve DNS names"
+            />
+            DNS Resolution</label
+          >
+        </div>
+
+        <!-- Timing -->
+        <div class="feature-section glass-section">
+          <h3>Timing</h3>
+          <label
+            for="timing"
+            class="tooltip"
+            data-tooltip="Timing template (0-5)"
+            >Timing (-T):</label
+          >
+          <select id="timing">
+            <option value="">Default</option>
+            <option value="-T0" data-tooltip="Very slow, stealthy scan">
+              Paranoid
+            </option>
+            <option value="-T1" data-tooltip="Slow, stealthy scan">
+              Sneaky
+            </option>
+            <option value="-T2" data-tooltip="Polite, slower scan">
+              Polite
+            </option>
+            <option value="-T3" data-tooltip="Normal scan speed">Normal</option>
+            <option value="-T4" data-tooltip="Fast, aggressive scan">
+              Aggressive
+            </option>
+            <option value="-T5" data-tooltip="Very fast, noisy scan">
+              Insane
+            </option>
+          </select>
+          <label
+            for="min-rate"
+            class="tooltip"
+            data-tooltip="Minimum packets per second"
+            >Min Rate:</label
+          >
+          <input type="number" id="min-rate" />
+          <label
+            for="max-rate"
+            class="tooltip"
+            data-tooltip="Maximum packets per second"
+            >Max Rate:</label
+          >
+          <input type="number" id="max-rate" />
+          <label
+            for="min-parallelism"
+            class="tooltip"
+            data-tooltip="Minimum parallel probes"
+            >Min Parallelism:</label
+          >
+          <input type="number" id="min-parallelism" />
+          <label
+            for="max-parallelism"
+            class="tooltip"
+            data-tooltip="Maximum parallel probes"
+            >Max Parallelism:</label
+          >
+          <input type="number" id="max-parallelism" />
+          <label
+            for="min-rtt-timeout"
+            class="tooltip"
+            data-tooltip="Minimum RTT timeout"
+            >Min RTT Timeout:</label
+          >
+          <input type="text" id="min-rtt-timeout" placeholder="e.g., 100ms" />
+          <label
+            for="max-rtt-timeout"
+            class="tooltip"
+            data-tooltip="Maximum RTT timeout"
+            >Max RTT Timeout:</label
+          >
+          <input type="text" id="max-rtt-timeout" placeholder="e.g., 1000ms" />
+          <label
+            for="initial-rtt-timeout"
+            class="tooltip"
+            data-tooltip="Initial RTT timeout"
+            >Initial RTT Timeout:</label
+          >
+          <input
+            type="text"
+            id="initial-rtt-timeout"
+            placeholder="e.g., 500ms"
+          />
+          <label
+            for="scan-delay"
+            class="tooltip"
+            data-tooltip="Delay between probes"
+            >Scan Delay:</label
+          >
+          <input type="text" id="scan-delay" placeholder="e.g., 10ms" />
+          <label
+            for="host-timeout"
+            class="tooltip"
+            data-tooltip="Timeout per host"
+            >Host Timeout:</label
+          >
+          <input type="text" id="host-timeout" placeholder="e.g., 30m" />
+          <label
+            for="min-hostgroup"
+            class="tooltip"
+            data-tooltip="Minimum hosts scanned together"
+            >Min Hostgroup:</label
+          >
+          <input type="number" id="min-hostgroup" />
+          <label
+            for="max-hostgroup"
+            class="tooltip"
+            data-tooltip="Maximum hosts scanned together"
+            >Max Hostgroup:</label
+          >
+          <input type="number" id="max-hostgroup" />
+        </div>
+
+        <!-- Evasion -->
+        <div class="feature-section glass-section">
+          <h3>Evasion</h3>
+          <label
+            for="spoof-mac"
+            class="tooltip"
+            data-tooltip="Spoof MAC address"
+            >Spoof MAC:</label
+          >
+          <input
+            type="text"
+            id="spoof-mac"
+            placeholder="e.g., 00:11:22:33:44:55"
+          />
+          <label
+            for="data-length"
+            class="tooltip"
+            data-tooltip="Append random data length"
+            >Data Length:</label
+          >
+          <input type="number" id="data-length" />
+          <label
+            ><input
+              type="checkbox"
+              id="badsum"
+              data-tooltip="Send invalid checksums"
+            />
+            Bad Checksum</label
+          >
+          <label for="ttl" class="tooltip" data-tooltip="Set time-to-live"
+            >TTL:</label
+          >
+          <input type="number" id="ttl" />
+          <label
+            ><input type="checkbox" id="decoys" data-tooltip="Use decoy IPs" />
+            Decoys</label
+          >
+          <input type="text" id="decoys-value" placeholder="e.g., IP1,IP2" />
+          <label
+            ><input
+              type="checkbox"
+              id="fragment"
+              data-tooltip="Fragment packets for evasion"
+            />
+            Fragment Packets</label
+          >
+          <label
+            for="source-port"
+            class="tooltip"
+            data-tooltip="Set specific source port"
+            >Source Port:</label
+          >
+          <input type="number" id="source-port" placeholder="e.g., 53" />
+          <label
+            ><input
+              type="checkbox"
+              id="ip-options"
+              data-tooltip="Add custom IP options"
+            />
+            IP Options</label
+          >
+          <input type="text" id="ip-options-value" placeholder="e.g., U" />
+          <label
+            ><input
+              type="checkbox"
+              id="randomize-hosts"
+              data-tooltip="Randomize host scan order"
+            />
+            Randomize Hosts</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="spoof-source"
+              data-tooltip="Spoof source address"
+            />
+            Spoof Source</label
+          >
+          <input
+            type="text"
+            id="spoof-source-value"
+            placeholder="e.g., 192.168.1.100"
+          />
+        </div>
+
+        <!-- Scripting -->
+        <div class="feature-section glass-section">
+          <h3>Scripting</h3>
+          <label
+            ><input
+              type="checkbox"
+              id="script"
+              data-tooltip="Run Nmap scripts"
+            />
+            Run Scripts</label
+          >
+          <label
+            for="script-args"
+            class="tooltip"
+            data-tooltip="Arguments for scripts"
+            >Script Args:</label
+          >
+          <input
+            type="text"
+            id="script-args"
+            placeholder="e.g., http.title=example"
+          />
+          <label
+            ><input
+              type="checkbox"
+              id="script-trace"
+              data-tooltip="Trace script execution"
+            />
+            Script Trace</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="script-default"
+              data-tooltip="Run default scripts"
+            />
+            Default Scripts</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="script-safe"
+              data-tooltip="Run safe scripts only"
+            />
+            Safe Scripts</label
+          >
+          <label
+            for="script-categories"
+            class="tooltip"
+            data-tooltip="Comma-separated script categories"
+            >Script Categories:</label
+          >
+          <input
+            type="text"
+            id="script-categories"
+            placeholder="e.g., safe, discovery"
+          />
+        </div>
+
+        <!-- Output -->
+        <div class="feature-section glass-section">
+          <h3>Output</h3>
+          <label
+            ><input
+              type="checkbox"
+              id="verbose"
+              data-tooltip="Verbose output"
+            />
+            Verbose (-v)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="reason"
+              data-tooltip="Show port state reasons"
+            />
+            Reason</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="open"
+              data-tooltip="Show open ports only"
+            />
+            Open Ports</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="packet-trace"
+              data-tooltip="Show packet details"
+            />
+            Packet Trace</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="no-stylesheet"
+              data-tooltip="Disable XML stylesheet"
+            />
+            No Stylesheet</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="resolve-all"
+              data-tooltip="Resolve all hostnames"
+            />
+            Resolve All</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="append-output"
+              data-tooltip="Append to output file"
+            />
+            Append Output</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="stats-every"
+              data-tooltip="Show stats periodically"
+            />
+            Stats Every</label
+          >
+          <input type="text" id="stats-interval" placeholder="e.g., 10s" />
+          <label
+            ><input
+              type="checkbox"
+              id="xml-output"
+              data-tooltip="Output in XML format"
+            />
+            XML Output</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="grep-output"
+              data-tooltip="Grepable output format"
+            />
+            Grepable Output</label
+          >
+        </div>
+
+        <!-- Discovery -->
+        <div class="feature-section glass-section">
+          <h3>Discovery</h3>
+          <label
+            ><input type="checkbox" id="sn" data-tooltip="Ping scan only" />
+            Ping Scan (-sn)</label
+          >
+          <label
+            ><input type="checkbox" id="pe" data-tooltip="ICMP echo request" />
+            Echo Request (-PE)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="pp"
+              data-tooltip="ICMP timestamp ping"
+            />
+            Timestamp Ping (-PP)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="pm"
+              data-tooltip="ICMP address mask ping"
+            />
+            Netmask Ping (-PM)</label
+          >
+          <label
+            ><input type="checkbox" id="ps" data-tooltip="TCP SYN ping" /> TCP
+            SYN Ping (-PS)</label
+          >
+          <input type="text" id="ps-ports" placeholder="e.g., 80,443" />
+          <label
+            ><input type="checkbox" id="pa" data-tooltip="TCP ACK ping" /> TCP
+            ACK Ping (-PA)</label
+          >
+          <input type="text" id="pa-ports" placeholder="e.g., 80,443" />
+          <label
+            ><input type="checkbox" id="pu" data-tooltip="UDP ping" /> UDP Ping
+            (-PU)</label
+          >
+          <input type="text" id="pu-ports" placeholder="e.g., 53,161" />
+          <label
+            ><input
+              type="checkbox"
+              id="no-ping"
+              data-tooltip="Disable ping scan"
+            />
+            No Ping (-Pn)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="disable-arp-ping"
+              data-tooltip="Disable ARP ping"
+            />
+            Disable ARP Ping</label
+          >
+        </div>
+
+        <!-- Miscellaneous -->
+        <div class="feature-section glass-section">
+          <h3>Miscellaneous</h3>
+          <label
+            ><input
+              type="checkbox"
+              id="privileged"
+              data-tooltip="Run as privileged user"
+            />
+            Privileged</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="unprivileged"
+              data-tooltip="Run as unprivileged user"
+            />
+            Unprivileged</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="send-eth"
+              data-tooltip="Send using raw ethernet"
+            />
+            Send Ethernet</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="send-ip"
+              data-tooltip="Send using raw IP"
+            />
+            Send IP</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="iflist"
+              data-tooltip="List network interfaces"
+            />
+            List Interfaces</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="6"
+              data-tooltip="Enable IPv6 scanning"
+            />
+            IPv6 (-6)</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="system-dns"
+              data-tooltip="Use system DNS resolver"
+            />
+            System DNS</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="dns-servers"
+              data-tooltip="Use custom DNS servers"
+            />
+            DNS Servers</label
+          >
+          <input
+            type="text"
+            id="dns-servers-value"
+            placeholder="e.g., 8.8.8.8, 1.1.1.1"
+          />
+          <label
+            ><input type="checkbox" id="mtu" data-tooltip="Set custom MTU" />
+            Custom MTU</label
+          >
+          <input type="number" id="mtu-value" placeholder="e.g., 1400" />
+          <label
+            ><input
+              type="checkbox"
+              id="data"
+              data-tooltip="Append custom data"
+            />
+            Custom Data</label
+          >
+          <input type="text" id="data-value" placeholder="e.g., 0xdeadbeef" />
+          <label
+            ><input
+              type="checkbox"
+              id="data-string"
+              data-tooltip="Append string data"
+            />
+            String Data</label
+          >
+          <input type="text" id="data-string-value" placeholder="e.g., test" />
+          <label
+            ><input
+              type="checkbox"
+              id="proxies"
+              data-tooltip="Use HTTP/SOCKS proxies"
+            />
+            Proxies</label
+          >
+          <input
+            type="text"
+            id="proxies-value"
+            placeholder="e.g., http://proxy:8080"
+          />
+          <label
+            ><input
+              type="checkbox"
+              id="spoof-idle"
+              data-tooltip="Idle scan with zombie"
+            />
+            Idle Scan</label
+          >
+          <input
+            type="text"
+            id="spoof-idle-value"
+            placeholder="e.g., 192.168.1.2"
+          />
+          <label
+            ><input
+              type="checkbox"
+              id="dry-run"
+              data-tooltip="Simulate scan without running"
+            />
+            Dry Run</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="skip-host-discovery"
+              data-tooltip="Skip host discovery"
+            />
+            Skip Host Discovery</label
+          >
+        </div>
+
+        <button type="submit" class="glass-btn">Scan</button>
+        <button type="button" id="save-config" class="glass-btn save-btn">
+          Save Config
+        </button>
+      </form>
+      <div id="results" class="results glass-results hidden"></div>
+      <div id="history" class="results glass-results hidden"></div>
+      <button class="copy-btn glass-btn hidden" id="copy-btn">
+        Copy Results
+      </button>
+      <button class="help-btn glass-btn">?</button>
+    </main>
+    <div id="scan-screen" class="glass-scan">
+      <div class="scan-animation"></div>
+      <div class="scan-text">Scanning...</div>
+    </div>
+    <div id="help-modal" class="glass-modal">
+      <div class="help-content glass-help">
+        <h3>Lynx Help by Resonex</h3>
+        <p>Lynx is an advanced IP scanner for Termux, built by Resonex.</p>
+        <ul>
+          <li>
+            <strong>Key:</strong> Use "lynx2025" or get it from
+            <a href="https://t.me/cyber_snipper" target="_blank"
+              >t.me/cyber_snipper</a
+            >.
+          </li>
+          <li><strong>Target:</strong> Enter an IP or hostname.</li>
+          <li>
+            <strong>Features:</strong> Scroll through 100+ options in
+            categorized sections.
+          </li>
+          <li>
+            <strong>Checkboxes:</strong> Toggle options like Verbose, OS
+            Detection.
+          </li>
+          <li><strong>Tooltips:</strong> Hover for command explanations.</li>
+          <li><strong>Save Config:</strong> Store settings locally.</li>
+          <li><strong>History:</strong> View past scans.</li>
+        </ul>
+        <button class="close-btn glass-btn">Close</button>
+      </div>
+    </div>
+    <script src="/static/script.js"></script>
+  </body>
+</html>
