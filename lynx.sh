@@ -60,8 +60,9 @@ display_banner() {
                                                   
 
 EOF
-    echo -e "   IP Scanning Tool v1.0${NC}"
-    echo -e "${BLUE}   Powered by Nmap${NC}"
+    echo -e "   Resonexs IP Scanning Tool v1.0${NC}"
+    echo -e "${BLUE}   Powered by Cyber Snipper${NC}"
+    echo -e "${RED}   telegram t.me/cyber_snipper${NC}"
     sleep 1
 }
 
