@@ -1,8 +1,8 @@
-# Nmap Web GUI Tool
+# LYNX Network scanner Gui
 
-A sleek, web-based GUI for Nmap, built with Flask, HTML, CSS, and JavaScript. Featuring 100+ Nmap commands, glassmorphism design, and a responsive interface optimized for Linux and Termux. Scan networks with ease using an intuitive interface with light purple, cyan, and teal-green aesthetics.
+A sleek, web-based GUI for Nmap, Featuring 100+ Nmap commands, glassmorphism design, and a responsive interface optimized for Linux and Termux. Scan networks with ease.
 
-![Screenshot of Nmap Web GUI](screenshot.png)
+![Screenshot of Nmap Web GUI]([screenshot.png](https://i.ibb.co/xq57zQ7L/Picsart-25-05-26-04-56-36-071.png))
 
 ## Features
 - 100+ Nmap commands with customizable options.
@@ -21,7 +21,7 @@ A sleek, web-based GUI for Nmap, built with Flask, HTML, CSS, and JavaScript. Fe
    cd nmap-web-gui
    ```
 
-2. Install dependencies (Python, Flask, and Nmap):
+2. Install dependencies:
    ```bash
    sudo apt update
    sudo apt install python3 python3-pip nmap -y
@@ -46,16 +46,18 @@ A sleek, web-based GUI for Nmap, built with Flask, HTML, CSS, and JavaScript. Fe
    cd nmap-web-gui
    ```
 
-2. Install dependencies (Python, Flask, and Nmap):
+2. Install dependencies:
    ```bash
    pkg update && pkg upgrade -y
    pkg install python nmap -y
    pip install flask
+   pip install psutil
    ```
 
 3. Run the application:
    ```bash
-   python app.py
+   chmod +x lynx.py
+   bash lynx.py
    ```
 
 4. Open in browser:
